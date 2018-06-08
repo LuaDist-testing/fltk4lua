@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>fltk4lua</title>
+  <style type="text/css">
+body {
+  margin: 30px;
+  padding: 0px;
+  font-size: 17px;
+  font-family: arial,helvetica,geneva,sans-serif;
+}
+p, pre, blockquote {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+h1 {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+h2, h3, h4, h5, h6 {
+  margin-top: 35px;
+  padding: 0px 40px 0px 40px;
+  background-color: #E7E7E7;
+  line-height: 30px;
+  font-weight: normal;
+}
+h2 {
+  font-size: 26px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 22px;
+}
+h4 {
+  font-size: 20px;
+  font-weight: bold;
+}
+:target + h2, :target + h3 {
+  padding: 2px 40px 2px 40px;
+  border: solid #A0A0A0 2px;
+  border-radius: 8px;
+}
+a {
+  color: #000088;
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover {
+  color: #FF0000;
+  background-color: #E7E7E7;
+  text-decoration: underline;
+}
+code {
+  font-weight: bold;
+}
+pre {
+  background-color: #F0F0F0;
+  border-left: 1px black solid;
+  padding: 5px 15px 5px 15px;
+}
+pre > code {
+  font-weight: normal;
+}
+  </style>
+</head>
+<body>
+
+<h1>fltk4lua -- Lua Binding to the Fast Light Tool Kit</h1>
+
+<p><a href="http://www.fltk.org/">FLTK</a> is a small C++ GUI toolkit portable to the MS Windows,
+Linux, and Mac OSX operating systems. <strong>fltk4lua</strong> is a binding to
+this C++ toolkit, which allows you to create GUIs from within Lua
+scripts.</p>
+
+<p><strong>fltk4lua</strong> is available via the <a href="http://luarocks.org/">LuaRocks package manager</a>. For
+details about building/installing the module see <a href="#Building">here</a>.</p>
+
+<p>Although FLTK is a small GUI toolkit, it still has many classes and
+functions. <strong>fltk4lua</strong> currently exports more than 50 different
+userdata types and hundreds of C++ functions. Fortunately the Lua API
+is <a href="#LuavsCpp">very close to the C++ API</a>, so you can use the
+<a href="http://www.fltk.org/doc-1.3/index.html">official FLTK documentation</a>, and look at the Lua examples in the
+repository, or at the source code. There is also a <a href="#GettingStarted">Getting Started
+Guide</a>, which builds a simple GUI with <strong>fltk4lua</strong>
+and explains every step.</p>
+
+
+<p>However, here is a list of userdata types/functions/properties that
+are available in Lua. The format of the listing (especially the
+function prototypes) is specified <a href="#FormatSpec">here</a>.</p>
+
+<ul>
+    <li><a href="#Image"><code>Image</code> (abstract)</a></li>
+    <li><a href="#Shared_Image"><code>Shared_Image</code></a></li>
+    <li><a href="#Widget"><code>Widget</code> (abstract)</a></li>
+    <li><a href="#Box"><code>Box</code></a></li>
+    <li><a href="#Button"><code>Button</code></a></li>
+    <li><a href="#Light_Button"><code>Light_Button</code></a></li>
+    <li><a href="#Check_Button"><code>Check_Button</code></a></li>
+    <li><a href="#Repeat_Button"><code>Repeat_Button</code></a></li>
+    <li><a href="#Return_Button"><code>Return_Button</code></a></li>
+    <li><a href="#Round_Button"><code>Round_Button</code></a></li>
+    <li><a href="#Chart"><code>Chart</code></a></li>
+    <li><a href="#Clock_Output"><code>Clock_Output</code></a></li>
+    <li><a href="#Clock"><code>Clock</code></a></li>
+    <li><a href="#Group"><code>Group</code></a></li>
+    <li><a href="#Browser_"><code>Browser_</code> (abstract)</a></li>
+    <li><a href="#Browser"><code>Browser</code></a></li>
+    <li><a href="#File_Browser"><code>File_Browser</code></a></li>
+    <li><a href="#Check_Browser"><code>Check_Browser</code></a></li>
+    <li><a href="#Color_Chooser"><code>Color_Chooser</code></a></li>
+    <li><a href="#Input_Choice"><code>Input_Choice</code></a></li>
+    <li><a href="#Pack"><code>Pack</code></a></li>
+    <li><a href="#Scroll"><code>Scroll</code></a></li>
+    <li><a href="#Spinner"><code>Spinner</code></a></li>
+    <li><a href="#Tabs"><code>Tabs</code></a></li>
+    <li><a href="#Tile"><code>Tile</code></a></li>
+    <li><a href="#Window"><code>Window</code></a></li>
+    <li><a href="#Wizard"><code>Wizard</code></a></li>
+    <li><a href="#Input"><code>Input</code></a></li>
+    <li><a href="#File_Input"><code>File_Input</code></a></li>
+    <li><a href="#Menu"><code>Menu</code> (abstract)</a></li>
+    <li><a href="#Choice"><code>Choice</code></a></li>
+    <li><a href="#Menu_Bar"><code>Menu_Bar</code></a></li>
+    <li><a href="#Menu_Button"><code>Menu_Button</code></a></li>
+    <li><a href="#Progress"><code>Progress</code></a></li>
+    <li><a href="#Valuator"><code>Valuator</code> (abstract)</a></li>
+    <li><a href="#Adjuster"><code>Adjuster</code></a></li>
+    <li><a href="#Counter"><code>Counter</code></a></li>
+    <li><a href="#Dial"><code>Dial</code></a></li>
+    <li><a href="#Roller"><code>Roller</code></a></li>
+    <li><a href="#Slider"><code>Slider</code></a></li>
+    <li><a href="#Scrollbar"><code>Scrollbar</code></a></li>
+    <li><a href="#Value_Slider"><code>Value_Slider</code></a></li>
+    <li><a href="#Value_Input"><code>Value_Input</code></a></li>
+    <li><a href="#Value_Output"><code>Value_Output</code></a></li>
+    <li><a href="#Functions">additional module functions</a></li>
+</ul>
+
+
+<hr />
+
+<a name="Building" id="Building"></a>
+<h2>Building/Installing</h2>
+
+<p><strong>fltk4lua</strong> is compatible with Lua 5.1 (including LuaJIT), 5.2, and
+5.3, for which the required include files have to be available. You
+will also need a C/C++ compiler (yes, one that actually can do both)
+and FLTK version 1.3 installed. On Unixes you can probably use the
+package manager for that (on Debian/Ubuntu it's <code>libfltk1.3-dev</code>, in
+Homebrew it's plain <code>fltk</code>). On Windows you will need to compile FLTK
+yourself (I have had success for both MinGW and MSVC++ Express 2010
+using CMAKE).</p>
+
+<p>The supplied Makefile is configured for Lua 5.2 on a Debian/Ubuntu
+Linux system. For other Unixes or other Lua installs you will have to
+change some variables in the Makefile (in particular <code>DLL_INSTALL_DIR</code>
+and <code>LUA_INCDIR</code> near the top -- most other compilation settings are
+determined by calling <code>fltk-config</code>) unless you build using LuaRocks
+which will do that for you automatically. For Windows the only
+supported way of building <strong>fltk4lua</strong> is via <a href="http://luarocks.org/">LuaRocks</a>.</p>
+
+
+
+<h3>Installing the latest release via LuaRocks</h3>
+
+<p>On Unix with FLTK installed system-wide a</p>
+
+<pre><code>luarocks install fltk4lua
+</code></pre>
+
+<p>should do the trick. On Windows you will probably have to specify the
+locations of FLTK header files and libraries:</p>
+
+<pre><code>luarocks install fltk4lua \
+    FLTK_INCDIR=/path/to/FL/incdir FLTK_LIBDIR=/path/to/fltk/libs
+</code></pre>
+
+<p>If you are building on Windows for Lua 5.3, you will also need to
+install an updated <code>luarocks-build-cpp</code> rock, because the one in the
+main LuaRocks repository (version 0.1 at the time of this writing) is
+not compatible with Lua 5.3. You can find a working fork <a href="https://github.com/siffiejoe/luarocks-build-cpp">here on
+GitHub</a>, or in a separate manifest in the LuaRocks repository:</p>
+
+<pre><code>luarocks install --server=http://luarocks.org/manifests/siffiejoe \
+    luarocks-build-cpp
+</code></pre>
+
+
+
+<h3>Installing the development version via LuaRocks</h3>
+
+<p>To install the latest version of <strong>fltk4lua</strong> from GitHub you just
+clone the repository <em>recursively</em> and run <code>luarocks make</code>:</p>
+
+<pre><code>git clone https://github.com/siffiejoe/lua-fltk4lua --recursive
+cd lua-fltk4lua
+luarocks make
+</code></pre>
+
+<p>(On Windows don't forget to specify <code>FLTK_INCDIR</code> and <code>FLTK_LIBDIR</code>!)</p>
+
+<p>Or you just use the dev manifest when invoking LuaRocks:</p>
+
+<pre><code>luarocks install --server=http://luarocks.org/dev fltk4lua
+</code></pre>
+
+<p>However, you will need a <code>git</code> executable installed that LuaRocks can
+use (this is usually not a problem on Unix).</p>
+
+
+<a name="LuavsCpp" id="LuavsCpp"></a>
+<h2>Differences Lua API vs. C++ API</h2>
+
+<p>In general there are the following differences between Lua API and C++
+API (assuming you did a <code>local fl = require( "fltk4lua" )</code> at the top
+of your Lua source file):</p>
+
+<ul>
+    <li>The prefixes of classes and functions have been removed, so use
+    <ul>
+        <li><code>fl.message()</code> instead of <code>fl_message()</code></li>
+        <li><code>fl.run()</code> instead of <code>Fl::run()</code></li>
+        <li><code>fl.Box()</code> instead of <code>new Fl_Box()</code></li>
+        <li><code>fl.ALIGN_CENTER</code> instead of <code>FL_ALIGN_CENTER</code> (but see below).</li>
+    </ul></li>
+    <li>Some <code>enum</code>s or preprocessor macros are translated to strings:
+    <ul>
+        <li><code>"FL_UP_BOX"</code> instead of <code>FL_UP_BOX</code>.</li>
+    </ul></li>
+    <li>The remaining <code>enum</code>s/macros are available as userdata, so that
+    you can combine them using bitwise operators (in Lua 5.3) or the
+    following alternative operators:
+    <ul>
+        <li><code>local a = fl.ALIGN_TOP + fl.ALIGN_LEFT</code> instead of
+        <code>Fl_Align a = FL_ALIGN_TOP | FL_ALIGN_LEFT;</code></li>
+        <li><code>local a = b - fl.ALIGN_LEFT</code> instead of
+        <code>Fl_Align a = b &amp; (~FL_ALIGN_LEFT);</code> and</li>
+        <li><code>if a( fl.ALIGN_TOP ) then</code> instead of <code>if( a &amp; FL_ALIGN_TOP )</code>
+        (more specifically it's <code>!(~a &amp; FL_ALIGN_TOP)</code>, but that only
+        matters when multiple bits are set in the right-hand-side).</li>
+    </ul></li>
+    <li>C++ method calls are translated to Lua properties whenever
+    possible, so use
+    <ul>
+        <li><code>b.box = "FL_UP_BOX"</code> instead of <code>b-&gt;box( FL_UP_BOX );</code> and</li>
+        <li><code>local bt = b.box</code> instead of <code>Fl_Boxtype bt = b-&gt;box();</code>.</li>
+    </ul></li>
+    <li>Integers used as boolean values are translated to real <code>boolean</code>s.</li>
+    <li><code>nil</code> is translated to <code>NULL</code> if <code>NULL</code> is allowed (and vice
+    versa).</li>
+    <li>Output parameters end up as (multiple) return values.</li>
+    <li>The menu interface is a bit different, though, as it is completely
+    index based, and the <code>Fl_Menu_Item</code>s are not exposed as userdata.
+    Instead there are extra methods on the widget that contains the
+    menu items.</li>
+</ul>
+
+
+<a name="GettingStarted" id="GettingStarted"></a>
+<h2>Getting Started</h2>
+
+<p><strong>fltk4lua</strong> consists of a single C module that you can load via
+<code>require</code>:</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+</code></pre>
+
+<p>FLTK is a GUI toolkit with its own event loop, which you can run using
+the <code>fl.run()</code> method. This method will process all events until the
+last <a href="#Window">Window</a> becomes hidden. This is also the preferred way
+of exiting an FLTK application.</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+fl.run()  -- will return immediately, because there is no window
+</code></pre>
+
+<p>In addition to <code>fl.run()</code> there are functions that only handle a small
+amout of events (<code>fl.wait()</code> and <code>fl.check()</code>), so that you can
+integrate the FLTK event loop with some other event loop.</p>
+
+<p>For the application to show a GUI, you need to create and <code>show()</code> a
+window:</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+local window = fl.Window( 340, 180, "Hello" )
+window:show( arg )  -- process certain command line flags
+fl.run()
+</code></pre>
+
+<p>The <code>fl.Window()</code> constructor takes the width and the height of the
+window in pixels, as well as an optional title as a string, and returns
+a window object.  Since the window is <code>show()</code>n, the <code>fl.run()</code> method
+will handle events until the window becomes invisible again. FLTK by
+default hides the current window when you press <code>ESC</code>, so this is one
+way to quit the example program above.</p>
+
+<p>All windows are derived from <a href="#Group">Group</a>, which means that they can
+contain child widgets. All widgets are automatically added to the last
+group object created until you call the <code>end_group()</code> method on the
+group object.</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+local window = fl.Window( 340, 180, "Hello" )
+local box = fl.Box( 20, 40, 300, 100, "Hello World!" )
+window:end_group()
+window:show( arg )
+fl.run()
+</code></pre>
+
+<p>The constructors of all <a href="#Widget">Widget</a>s take the same arguments: the
+x and y coordinates of the top left corner, the width and height in
+pixels, and an optional label. In fact, since windows are regular
+widgets, the window constructor will accept those arguments as well. A
+<a href="#Box">Box</a> is one of the simplest widgets in FLTK. It is used only for
+visual effect:</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+local window = fl.Window( 340, 180, "Hello" )
+local box = fl.Box( 20, 40, 300, 100, "Hello World!" )
+box.box = "FL_UP_BOX"
+box.labelfont = "FL_HELVETICA_BOLD_ITALIC"
+box.labelsize = 36
+box.labeltype = "FL_SHADOW_LABEL"
+window:end_group()
+window:show( arg )
+fl.run()
+</code></pre>
+
+<p>There is some syntax sugar for widget constructors which allows you to
+specify properties directly when creating the widget. And since
+widgets are added to the parent group automatically, you sometimes
+don't even need a variable for the widget object:</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+local window = fl.Window( 340, 180, "Hello" )
+fl.Box{ 20, 40, 300, 100, "Hello World!",
+  box = "FL_UP_BOX", labelfont = "FL_HELVETICA_BOLD_ITALIC",
+  labelsize = 36, labeltype = "FL_SHADOW_LABEL"
+}
+window:end_group()
+window:show( arg )
+fl.run()
+</code></pre>
+
+<p>When something important happens with the GUI (like a button press
+for instance), FLTK will call a callback function on the target
+widget, passing the widget as first argument and a <code>user_data</code> value
+as the second argument (FLTK calls it <code>user_data</code>, it doesn't have to
+be a Lua userdata). Of course you can use a closure to have access to
+any Lua value in a local variable ...</p>
+
+<pre><code>local fl = require( "fltk4lua" )
+local window = fl.Window( 340, 210, "Hello" )
+fl.Box{ 20, 40, 300, 100, "Hello World!",
+  box = "FL_UP_BOX", labelfont = "FL_HELVETICA_BOLD_ITALIC",
+  labelsize = 36, labeltype = "FL_SHADOW_LABEL"
+}
+fl.Button{ 20, 150, 140, 30, "Print Me",
+  user_data = "some Lua value", callback = print
+}
+local btn = fl.Button( 180, 150, 140, 30, "Quit" )
+function btn:callback()
+  window:hide()  -- will cleanly exit the application
+end
+window:end_group()
+window:show( arg )
+fl.run()
+</code></pre>
+
+<p>This should get you started. You can take a look at the <a href="#Home">list of
+widgets</a> <strong>fltk4lua</strong> provides you with, and the properties and
+methods you can use.</p>
+
+<p>Have fun!</p>
+
+
+<a name="FormatSpec" id="FormatSpec"></a>
+<h2>Interface Format Spec</h2>
+
+<p>The function/property prototypes are listed using the following
+format:</p>
+
+<ul>
+    <li>The parameter types of function calls are declared inside the
+    parentheses after the function name.</li>
+    <li>Return value types for functions are specified after <code>==&gt;</code>.</li>
+    <li>The types listed for properties indicate the return value for the
+    <code>__index</code> metamethod (<code>get:</code> part), or the required value type
+    for the <code>__newindex</code> metamethod (<code>set:</code> part). The only valid type
+    for keys is <code>string</code> for both metamethods. A dash (<code>-</code>) means that
+    the property can't be read/written (but an inherited property of
+    the same name might be used instead).</li>
+    <li>Lua types are abbreviated as:  <code>nil=n</code>, <code>boolean=b</code>, <code>integer=i</code>,
+    <code>number=d</code> (think <code>double</code>), <code>string=s</code>, <code>function=f</code>,
+    <code>userdata=u</code>, <code>coroutine=c</code>, <code>table=t</code>, <code>any (non-nil)=a</code>.
+    Alternative types are concatenated together, so e.g.  <code>nu</code> means
+    <code>nil</code> or <code>userdata</code>.</li>
+    <li>Parameters at the end of the parameter list which also accept
+    <code>nil</code> can be left out as usual (optional parameters).</li>
+    <li>Boolean parameters accept any Lua value (interpreted as
+    true-ish/false-y as usual), so a boolean parameter at the end of
+    the parameter list is optional as well.</li>
+    <li>There are a few exceptions where the number of arguments is used
+    to select an overloaded C++ method, but those cases are rare.
+    Usually such functions are listed multiple times with different
+    prototypes.</li>
+    <li>Sometimes (groups of) optional arguments are explicitly marked
+    using square brackets. In such a case you should provide none or
+    all of the optional arguments.</li>
+</ul>
+
+<p>If a function and a property have the same name, the function always
+takes precedence (hopefully the affected function or the property has
+been renamed to avoid this case), and methods/properties defined on
+the sub-class take precedence over inherited ones.</p>
+
+
+<a name="Image" id="Image"></a>
+<h3><code>Image</code> (abstract):</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Image.html"><code>Fl_Image</code></a></p>
+
+<ul>
+    <li><code>obj:color_average( iu, d )</code></li>
+    <li><code>obj:desaturate()</code></li>
+    <li><code>obj:inactive()</code></li>
+    <li><code>obj:uncache()</code></li>
+    <li><code>obj.d  [get: i; set: -]</code></li>
+    <li><code>obj.h  [get: i; set: -]</code></li>
+    <li><code>obj.w  [get: i; set: -]</code></li>
+</ul>
+
+
+<a name="Shared_Image" id="Shared_Image"></a>
+<h3><code>Shared_Image</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Shared__Image.html"><code>Fl_Shared_Image</code></a></p>
+
+<p>Inherits from:
+<a href="#Image"><code>Image</code></a></p>
+
+<ul>
+    <li><code>fl.Shared_Image.get( s, ni, ni ) ==&gt; u</code></li>
+    <li><code>fl.Shared_Image.find( s, ni, ni ) ==&gt; u</code></li>
+    <li><code>obj:copy( i, i ) ==&gt; u</code></li>
+    <li><code>obj:reload()</code></li>
+    <li>methods defined for the <a href="#Image"><code>Image</code></a> userdata type</li>
+    <li><code>obj.name  [get: s; set: -]</code></li>
+    <li>properties defined for the <a href="#Image"><code>Image</code></a> userdata type</li>
+</ul>
+
+
+<a name="Widget" id="Widget"></a>
+<h3><code>Widget</code> (abstract):</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Widget.html"><code>Fl_Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Widget.label_shortcut( s ) ==&gt; i</code></li>
+    <li><code>obj:activate()</code></li>
+    <li><code>obj:clear_changed()</code></li>
+    <li><code>obj:clear_damage()</code></li>
+    <li><code>obj:clear_output()</code></li>
+    <li><code>obj:clear_visible()</code></li>
+    <li><code>obj:clear_visible_focus()</code></li>
+    <li><code>obj:contains( u ) ==&gt; b</code></li>
+    <li><code>obj:deactivate()</code></li>
+    <li><code>obj:hide()</code></li>
+    <li><code>obj:inside( nu ) ==&gt; b</code></li>
+    <li><code>obj:measure_label( ni ) ==&gt; i, i</code></li>
+    <li><code>obj:position( i, i )</code></li>
+    <li><code>obj:redraw()</code></li>
+    <li><code>obj:redraw_label()</code></li>
+    <li><code>obj:resize( i, i, i, i )</code></li>
+    <li><code>obj:set_changed()</code></li>
+    <li><code>obj:set_output()</code></li>
+    <li><code>obj:set_visible()</code></li>
+    <li><code>obj:set_visible_focus()</code></li>
+    <li><code>obj:show()</code></li>
+    <li><code>obj:size( i, i )</code></li>
+    <li><code>obj:take_focus() ==&gt; b</code></li>
+    <li><code>obj.x  [get: i; set: -]</code></li>
+    <li><code>obj.y  [get: i; set: -]</code></li>
+    <li><code>obj.w  [get: i; set: -]</code></li>
+    <li><code>obj.h  [get: i; set: -]</code></li>
+    <li><code>obj.box  [get: s; set: s]</code></li>
+    <li><code>obj.when  [get: u; set: u]</code></li>
+    <li><code>obj.align  [get: u; set: su]</code></li>
+    <li><code>obj.color  [get: u; set: iu]</code></li>
+    <li><code>obj.image  [get: nu; set: nu]</code></li>
+    <li><code>obj.label  [get: s; set: s]</code></li>
+    <li><code>obj.active  [get: b; set: -]</code></li>
+    <li><code>obj.output  [get: b; set: -]</code></li>
+    <li><code>obj.parent  [get: u; set: -]</code></li>
+    <li><code>obj.changed  [get: b; set: -]</code></li>
+    <li><code>obj.deimage  [get: nu; set: nu]</code></li>
+    <li><code>obj.tooltip  [get: s; set: s]</code></li>
+    <li><code>obj.visible  [get: b; set: -]</code></li>
+    <li><code>obj.active_r  [get: b; set: -]</code></li>
+    <li><code>obj.callback  [get: nf; set: nf]</code></li>
+    <li><code>obj.labelfont  [get: s; set: is]</code></li>
+    <li><code>obj.labelsize  [get: i; set: i]</code></li>
+    <li><code>obj.labeltype  [get: s; set: s]</code></li>
+    <li><code>obj.user_data  [get: na; set: na]</code></li>
+    <li><code>obj.visible_r  [get: b; set: -]</code></li>
+    <li><code>obj.labelcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.takesevents  [get: b; set: -]</code></li>
+    <li><code>obj.visible_focus  [get: b; set: b]</code></li>
+    <li><code>obj.selection_color  [get: u; set: iu]</code></li>
+</ul>
+
+
+<a name="Box" id="Box"></a>
+<h3><code>Box</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Box.html"><code>Fl_Box</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Box( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Box( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Button" id="Button"></a>
+<h3><code>Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Button.html"><code>Fl_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:clear() ==&gt; b</code></li>
+    <li><code>obj:set() ==&gt; b</code></li>
+    <li><code>obj:setonly()</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.value  [get: b; set: b]</code></li>
+    <li><code>obj.down_box  [get: s; set: s]</code></li>
+    <li><code>obj.shortcut  [get: u; set: isu]</code></li>
+    <li><code>obj.down_color  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>Different behavior for the button can be selected by setting its
+<code>type</code> property to one of:</p>
+
+<ul>
+    <li><code>"FL_NORMAL_BUTTON"</code> (the default)</li>
+    <li><code>"FL_TOGGLE_BUTTON"</code></li>
+    <li><code>"FL_RADIO_BUTTON"</code></li>
+</ul>
+
+
+<a name="Light_Button" id="Light_Button"></a>
+<h3><code>Light_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Light__Button.html"><code>Fl_Light_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Button"><code>Button</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Light_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Light_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Check_Button" id="Check_Button"></a>
+<h3><code>Check_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Check__Button.html"><code>Fl_Check_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Button"><code>Button</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Check_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Check_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Repeat_Button" id="Repeat_Button"></a>
+<h3><code>Repeat_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Repeat__Button.html"><code>Fl_Repeat_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Button"><code>Button</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Repeat_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Repeat_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:deactivate()</code></li>
+    <li>methods defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Return_Button" id="Return_Button"></a>
+<h3><code>Return_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Return__Button.html"><code>Fl_Return_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Button"><code>Button</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Return_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Return_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Round_Button" id="Round_Button"></a>
+<h3><code>Round_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Round__Button.html"><code>Fl_Round_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Button"><code>Button</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Round_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Round_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Button"><code>Button</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Chart" id="Chart"></a>
+<h3><code>Chart</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Chart.html"><code>Fl_Chart</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Chart( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Chart( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:add( d, ns, niu )</code></li>
+    <li><code>obj:bounds() ==&gt; d, d</code></li>
+    <li><code>obj:bounds( d, d )</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:insert( i, d, ns, niu )</code></li>
+    <li><code>obj:replace( i, d, ns, niu )</code></li>
+    <li><code>obj:size( i, i )</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.maxsize  [get: i; set: i]</code></li>
+    <li><code>obj.autosize  [get: b; set: b]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.chart_size  [get: i; set: -]</code> (corresponds to
+    <code>Fl_Chart::size()</code>)</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of charts can be set to one of the following
+values:</p>
+
+<ul>
+    <li><code>"FL_BAR_CHART"</code></li>
+    <li><code>"FL_FILLED_CHART"</code></li>
+    <li><code>"FL_HORBAR_CHART"</code></li>
+    <li><code>"FL_LINE_CHART"</code></li>
+    <li><code>"FL_PIE_CHART"</code></li>
+    <li><code>"FL_SPECIALPIE_CHART"</code></li>
+    <li><code>"FL_SPIKE_CHART"</code></li>
+</ul>
+
+
+<a name="Clock_Output" id="Clock_Output"></a>
+<h3><code>Clock_Output</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Clock__Output.html"><code>Fl_Clock_Output</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Clock_Output( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Clock_Output( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:setvalue( i, i, i )</code> (corresponds to
+    <code>Fl_Clock_Output::value(int, int, int)</code>)</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.hour  [get: i; set: -]</code></li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.value  [get: id; set: id]</code> (type depends on size of
+    <code>lua_Integer</code>)</li>
+    <li><code>obj.minute  [get: i; set: -]</code></li>
+    <li><code>obj.second  [get: i; set: -]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of the clock (output) can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FL_SQUARE_CLOCK"</code> (the default)</li>
+    <li><code>"FL_ROUND_CLOCK"</code></li>
+</ul>
+
+
+<a name="Clock" id="Clock"></a>
+<h3><code>Clock</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Clock.html"><code>Fl_Clock</code></a></p>
+
+<p>Inherits from:
+<a href="#Clock_Output"><code>Clock_Output</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Clock( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Clock( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Clock_Output"><code>Clock_Output</code></a> userdata
+    type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Clock_Output"><code>Clock_Output</code></a> userdata
+    type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Group" id="Group"></a>
+<h3><code>Group</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Group.html"><code>Fl_Group</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Group( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Group( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>fl.Group.current() ==&gt; nu</code></li>
+    <li><code>fl.Group.current( nu )</code></li>
+    <li><code>obj:add( u )</code></li>
+    <li><code>obj:add_resizable( u )</code></li>
+    <li><code>obj:begin()</code></li>
+    <li><code>obj:begin_group()</code> (same as <code>obj:begin()</code>)</li>
+    <li><code>obj:child( i ) ==&gt; u</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:end_group()</code> (corresponds to <code>Fl_Group::end()</code>)</li>
+    <li><code>obj:find( u ) ==&gt; i</code></li>
+    <li><code>obj:insert( u, i )</code></li>
+    <li><code>obj:remove( i )</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.children  [get: i; set: -]</code></li>
+    <li><code>obj.resizable  [get: nu; set: nu]</code></li>
+    <li><code>obj.clip_children  [get: b; set: b]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Browser_" id="Browser_"></a>
+<h3><code>Browser_</code> (abstract):</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Browser__.html"><code>Fl_Browser_</code></a></p>
+
+<ul>
+    <li><code>obj:deselect( b ) ==&gt; b</code></li>
+    <li><code>obj:scrollbar_left()</code></li>
+    <li><code>obj:scrollbar_right()</code></li>
+    <li><code>obj:sort( ns )</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.hposition  [get: i; set: i]</code></li>
+    <li><code>obj.vposition  [get: i; set: i]</code> (corresponds to
+    <code>Fl_Browser_::position()</code>)</li>
+    <li><code>obj.has_scrollbar  [get: s; set: s]</code></li>
+    <li><code>obj.scrollbar_size  [get: i; set: i]</code></li>
+    <li><code>obj.scrollbar_width  [get: i; set: i]</code></li>
+</ul>
+
+<p>The <code>has_scrollbar</code> property of browser widgets can be set to one of
+the following values to select which scrollbars are shown:</p>
+
+<ul>
+    <li><code>"HORIZONTAL"</code></li>
+    <li><code>"VERTICAL"</code></li>
+    <li><code>"BOTH"</code> (the default)</li>
+    <li><code>"HORIZONTAL_ALWAYS"</code></li>
+    <li><code>"VERTICAL_ALWAYS"</code></li>
+    <li><code>"BOTH_ALWAYS"</code></li>
+</ul>
+
+
+<a name="Browser" id="Browser"></a>
+<h3><code>Browser</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Browser.html"><code>Fl_Browser</code></a></p>
+
+<p>Inherits from:
+<a href="#Browser_"><code>Browser_</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Browser( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Browser( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:add( ns )</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:displayed( i ) ==&gt; b</code></li>
+    <li><code>obj:hide( [ i ] )</code></li>
+    <li><code>obj:insert( i, ns )</code></li>
+    <li><code>obj:load( s ) ==&gt; b / (n, s, i)</code></li>
+    <li><code>obj:make_visible( i )</code></li>
+    <li><code>obj:move( i, i )</code></li>
+    <li><code>obj:remove( i )</code></li>
+    <li><code>obj:select( i ) ==&gt; b</code></li>
+    <li><code>obj:selected( i ) ==&gt; b</code></li>
+    <li><code>obj:show( [ i ] )</code></li>
+    <li><code>obj:size( i, i )</code></li>
+    <li><code>obj:swap( i, i )</code></li>
+    <li><code>obj:text( i ) ==&gt; ns</code></li>
+    <li><code>obj:text( i, s )</code></li>
+    <li><code>obj:line_visible( i ) ==&gt; b</code> (corresponds to
+    <code>Fl_Browser::visible(int)</code>)</li>
+    <li>methods defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.value  [get: i; set: i]</code></li>
+    <li><code>obj.nitems  [get: i; set: -]</code> (corresponds to
+    <code>Fl_Browser::size()</code>)</li>
+    <li><code>obj.topline  [get: i; set: i]</code></li>
+    <li><code>obj.bottomline  [get: -; set: i]</code></li>
+    <li><code>obj.middleline  [get: -; set: i]</code></li>
+    <li><code>obj.column_char  [get: s; set: -]</code></li>
+    <li><code>obj.format_char  [get: s; set: -]</code></li>
+    <li><code>obj.column_widths  [get: t; set: t]</code></li>
+    <li>properties defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>Browser</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_Browser</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+<p>Different behavior for the browser can be selected by setting its
+<code>type</code> property to one of:</p>
+
+<ul>
+    <li><code>"FL_NORMAL_BROWSER"</code> (the default)</li>
+    <li><code>"FL_SELECT_BROWSER"</code></li>
+    <li><code>"FL_HOLD_BROWSER"</code></li>
+    <li><code>"FL_MULTI_BROWSER"</code></li>
+</ul>
+
+
+<a name="File_Browser" id="File_Browser"></a>
+<h3><code>File_Browser</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__File__Browser.html"><code>Fl_File_Browser</code></a></p>
+
+<p>Inherits from:
+<a href="#Browser"><code>Browser</code></a>,
+<a href="#Browser_"><code>Browser_</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.File_Browser( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.File_Browser( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:load( s, s ) ==&gt; b / (n, s, i)</code></li>
+    <li>methods defined for the <a href="#Browser"><code>Browser</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.filter  [get: s; set: s]</code></li>
+    <li><code>obj.filetype  [get: s; set: s]</code></li>
+    <li><code>obj.iconsize  [get: i; set: i]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li>properties defined for the <a href="#Browser"><code>Browser</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>File_Browser</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_File_Browser</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+<p>The <code>filetype</code> property of file browsers can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FILES"</code></li>
+    <li><code>"DIRECTORIES"</code></li>
+</ul>
+
+
+<a name="Check_Browser" id="Check_Browser"></a>
+<h3><code>Check_Browser</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Check__Browser.html"><code>Fl_Check_Browser</code></a></p>
+
+<p>Inherits from:
+<a href="#Browser_"><code>Browser_</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Check_Browser( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Check_Browser( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:add( ns, b )</code></li>
+    <li><code>obj:check_all()</code></li>
+    <li><code>obj:check_none()</code></li>
+    <li><code>obj:checked( i ) ==&gt; b</code></li>
+    <li><code>obj:checked( i, b )</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:remove( i ) ==&gt; i</code></li>
+    <li><code>obj:set_checked( i )</code></li>
+    <li><code>obj:text( i ) ==&gt; ns</code></li>
+    <li>methods defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: i; set: -]</code></li>
+    <li><code>obj.nitems  [get: i; set: -]</code></li>
+    <li><code>obj.nchecked  [get: i; set: -]</code></li>
+    <li>properties defined for the <a href="#Browser_"><code>Browser_</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>Check_Browser</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_Check_Browser</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+
+<a name="Color_Chooser" id="Color_Chooser"></a>
+<h3><code>Color_Chooser</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Color__Chooser.html"><code>Fl_Color_Chooser</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Color_Chooser( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Color_Chooser( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:rgb( d, d, d ) ==&gt; b</code></li>
+    <li><code>obj:hsv( d, d, d ) ==&gt; b</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.r  [get: d; set: -]</code></li>
+    <li><code>obj.g  [get: d; set: -]</code></li>
+    <li><code>obj.b  [get: d; set: -]</code></li>
+    <li><code>obj.hue  [get: d; set: -]</code></li>
+    <li><code>obj.mode  [get: i; set: i]</code></li>
+    <li><code>obj.value  [get: d; set: -]</code></li>
+    <li><code>obj.saturation  [get: d; set: -]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>Color_Chooser</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_Color_Chooser</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+
+<a name="Input_Choice" id="Input_Choice"></a>
+<h3><code>Input_Choice</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Input__Choice.html"><code>Fl_Input_Choice</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Input_Choice( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Input_Choice( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:add( s )</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:clear_changed()</code></li>
+    <li><code>obj:set_changed()</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.input  [get: u; set: -]</code></li>
+    <li><code>obj.value  [get: ns; set: nis]</code></li>
+    <li><code>obj.changed  [get: b; set: -]</code></li>
+    <li><code>obj.down_box  [get: s; set: s]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.menubutton  [get: u; set: -]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>Input_Choice</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_Input_Choice</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+
+<a name="Pack" id="Pack"></a>
+<h3><code>Pack</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Pack.html"><code>Fl_Pack</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Pack( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Pack( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.spacing  [get: i; set: i]</code></li>
+    <li><code>obj.horizontal  [get: b; set: -]</code></li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of pack widgets can be set to one of the following
+values:</p>
+
+<ul>
+    <li><code>"VERTICAL"</code></li>
+    <li><code>"HORIZONTAL"</code></li>
+</ul>
+
+
+<a name="Scroll" id="Scroll"></a>
+<h3><code>Scroll</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Scroll.html"><code>Fl_Scroll</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Scroll( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Scroll( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:scroll_to( i, i )</code></li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.scrollbar  [get: u; set: -]</code></li>
+    <li><code>obj.xposition  [get: i; set: -]</code></li>
+    <li><code>obj.yposition  [get: i; set: -]</code></li>
+    <li><code>obj.hscrollbar  [get: u; set: -]</code></li>
+    <li><code>obj.scrollbar_size  [get: i; set: i]</code></li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of scroll widgets can be set to one of the
+folloowing values to select which scrollbar(s) are shown:</p>
+
+<ul>
+    <li><code>"NO_SCROLLBARS"</code></li>
+    <li><code>"HORIZONTAL"</code></li>
+    <li><code>"VERTICAL"</code></li>
+    <li><code>"BOTH"</code></li>
+    <li><code>"HORIZONTAL_ALWAYS"</code></li>
+    <li><code>"VERTICAL_ALWAYS"</code></li>
+    <li><code>"BOTH_ALWAYS"</code></li>
+</ul>
+
+
+<a name="Spinner" id="Spinner"></a>
+<h3><code>Spinner</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Spinner.html"><code>Fl_Spinner</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Spinner( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Spinner( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:range( d, d )</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.step  [get: d; set: d]</code></li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.color  [get: u; set: iu]</code></li>
+    <li><code>obj.value  [get: d; set: d]</code></li>
+    <li><code>obj.format  [get: s; set: s]</code></li>
+    <li><code>obj.maximum  [get: d; set: d]</code></li>
+    <li><code>obj.minimum  [get: d; set: d]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>(note: <code>Spinner</code> does not inherit the methods and properties of
+<code>Group</code>, although <code>Fl_Spinner</code> is implemented as a sub-class of
+<code>Fl_Group</code>!)</p>
+
+<p>The <code>type</code> property of spinner widgets can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FL_INT_INPUT"</code></li>
+    <li><code>"FL_FLOAT_INPUT"</code></li>
+</ul>
+
+
+<a name="Tabs" id="Tabs"></a>
+<h3><code>Tabs</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Tabs.html"><code>Fl_Tabs</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Tabs( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Tabs( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:client_area( ni ) ==&gt; i, i, i, i</code></li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.push  [get: u; set: u]</code></li>
+    <li><code>obj.value  [get: u; set: u]</code></li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Tile" id="Tile"></a>
+<h3><code>Tile</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Tile.html"><code>Fl_Tile</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Tile( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Tile( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:position( i, i, i, i )</code></li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Window" id="Window"></a>
+<h3><code>Window</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Window.html"><code>Fl_Window</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Window( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Window( i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Window( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:clear_border()</code></li>
+    <li><code>obj:cursor( s, niu, niu )</code></li>
+    <li><code>obj:default_cursor( s, niu, niu )</code></li>
+    <li><code>obj:fullscreen()</code></li>
+    <li><code>obj:fullscreen_off( [i, i, i, i] )</code></li>
+    <li><code>obj:iconize()</code></li>
+    <li><code>obj:make_current()</code></li>
+    <li><code>obj:set_modal()</code></li>
+    <li><code>obj:set_non_modal()</code></li>
+    <li><code>obj:set_override()</code></li>
+    <li><code>obj:show( nt )</code></li>
+    <li><code>obj:size_range( i, i, ni, ni, ni, ni, b )</code></li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.label  [get: s; set: s]</code></li>
+    <li><code>obj.modal  [get: b; set: b]</code></li>
+    <li><code>obj.shown  [get: b; set: -]</code></li>
+    <li><code>obj.border  [get: b; set: -]</code></li>
+    <li><code>obj.x_root  [get: i; set: -]</code></li>
+    <li><code>obj.y_root  [get: i; set: -]</code></li>
+    <li><code>obj.xclass  [get: s; set: s]</code></li>
+    <li><code>obj.override  [get: b; set: -]</code></li>
+    <li><code>obj.iconlabel  [get: s; set: s]</code></li>
+    <li><code>obj.non_modal  [get: b; set: -]</code></li>
+    <li><code>obj.decorated_h  [get: i; set: -]</code></li>
+    <li><code>obj.decorated_w  [get: i; set: -]</code></li>
+    <li><code>obj.menu_window  [get: b; set: -]</code></li>
+    <li><code>obj.tooltip_window  [get: b; set: -]</code></li>
+    <li><code>obj.fullscreen_active  [get: b; set: -]</code></li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Wizard" id="Wizard"></a>
+<h3><code>Wizard</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Wizard.html"><code>Fl_Wizard</code></a></p>
+
+<p>Inherits from:
+<a href="#Group"><code>Group</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Wizard( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Wizard( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:next()</code></li>
+    <li><code>obj:prev()</code></li>
+    <li>methods defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: u; set: u]</code></li>
+    <li>properties defined for the <a href="#Group"><code>Group</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Input" id="Input"></a>
+<h3><code>Input</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Input.html"><code>Fl_Input</code></a>,
+<a href="http://www.fltk.org/doc-1.3/classFl__Input__.html"><code>Fl_Input_</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Input( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Input( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:copy( i ) ==&gt; b</code></li>
+    <li><code>obj:copy_cuts() ==&gt; b</code></li>
+    <li><code>obj:cut( [i [, i]] ) ==&gt; b</code></li>
+    <li><code>obj:index( i ) ==&gt; i</code></li>
+    <li><code>obj:insert( s ) ==&gt; b</code></li>
+    <li><code>obj:replace( i, i, ns ) ==&gt; b</code></li>
+    <li><code>obj:size( i, i )</code></li>
+    <li><code>obj:undo()</code></li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.mark  [get: i; set: i]</code></li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.wrap  [get: b; set: b]</code></li>
+    <li><code>obj.value  [get: s; set: s]</code></li>
+    <li><code>obj.tab_nav  [get: b; set: b]</code></li>
+    <li><code>obj.readonly  [get: b; set: b]</code></li>
+    <li><code>obj.shortcut  [get: u; set: isu]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.value_size  [get: i; set: -]</code> (corresponds to
+    <code>Fl_Input_::size()</code>)</li>
+    <li><code>obj.cursor_color  [get: u; set: iu]</code></li>
+    <li><code>obj.maximum_size  [get: i; set: i]</code></li>
+    <li><code>obj.cursor_position  [get: i; set: i]</code> (corresponds to
+    <code>Fl_Input_::position(int [, int])</code>)</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of input widgets can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FL_NORMAL_INPUT"</code> (the default)</li>
+    <li><code>"FL_FLOAT_INPUT"</code></li>
+    <li><code>"FL_INT_INPUT"</code></li>
+    <li><code>"FL_HIDDEN_INPUT"</code></li>
+    <li><code>"FL_MULTILINE_INPUT"</code></li>
+    <li><code>"FL_SECRET_INPUT"</code></li>
+    <li><code>"FL_NORMAL_OUTPUT"</code></li>
+    <li><code>"FL_MULTILINE_OUTPUT"</code></li>
+    <li><code>"FL_MULTILINE_INPUT_WRAP"</code></li>
+    <li><code>"FL_MULTILINE_OUTPUT_WRAP"</code></li>
+</ul>
+
+
+<a name="File_Input" id="File_Input"></a>
+<h3><code>File_Input</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__File__Input.html"><code>Fl_File_Input</code></a></p>
+
+<p>Inherits from:
+<a href="#Input"><code>Input</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.File_Input( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.File_Input( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Input"><code>Input</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: s; set: s]</code></li>
+    <li><code>obj.down_box  [get: s; set: s]</code></li>
+    <li><code>obj.errorcolor  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Input"><code>Input</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Menu" id="Menu"></a>
+<h3><code>Menu</code> (abstract):</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Menu__.html"><code>Fl_Menu_</code></a>,
+<a href="http://www.fltk.org/doc-1.3/structFl__Menu__Item.html"><code>Fl_Menu_Item</code></a></p>
+
+<ul>
+    <li><code>obj:add( s, nisu, nf, na, nu ) ==&gt; i</code></li>
+    <li><code>obj:clear()</code></li>
+    <li><code>obj:clear_submenu( i ) ==&gt; nb</code></li>
+    <li><code>obj:find_index( s ) ==&gt; ni</code></li>
+    <li><code>obj:insert( i, s, nisu, nf, na, nu ) ==&gt; i</code></li>
+    <li><code>obj:remove( i )</code></li>
+    <li><code>obj:size( i, i )</code></li>
+    <li><code>obj:menuitem_getp( i, s ) ==&gt; ?</code> gets a property value for the
+    menu element identified by the given index.
+    <ul>
+        <li><code>"text" ==&gt; ns</code></li>
+        <li><code>"flags" ==&gt; u</code></li>
+        <li><code>"label" ==&gt; ns</code></li>
+        <li><code>"callback" ==&gt; nf</code></li>
+        <li><code>"shortcut" ==&gt; u</code></li>
+        <li><code>"labelfont" ==&gt; s</code></li>
+        <li><code>"labelsize" ==&gt; i</code></li>
+        <li><code>"labeltype" ==&gt; s</code></li>
+        <li><code>"user_data" ==&gt; na</code></li>
+        <li><code>"labelcolor" ==&gt; u</code></li>
+    </ul></li>
+    <li><code>obj:menuitem_setp( i, s, ? )</code>
+    <ul>
+        <li><code>"text": s</code></li>
+        <li><code>"flags": u</code></li>
+        <li><code>"label": s</code></li>
+        <li><code>"callback": nf</code></li>
+        <li><code>"shortcut": isu</code></li>
+        <li><code>"labelfont": is</code></li>
+        <li><code>"labelsize": i</code></li>
+        <li><code>"labeltype": s</code></li>
+        <li><code>"user_data": na</code></li>
+        <li><code>"labelcolor": iu</code></li>
+    </ul></li>
+    <li><code>obj:menuitem_activate( i )</code></li>
+    <li><code>obj:menuitem_active( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_activevisible( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_checkbox( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_clear( i )</code></li>
+    <li><code>obj:menuitem_deactivate( i )</code></li>
+    <li><code>obj:menuitem_hide( i )</code></li>
+    <li><code>obj:menuitem_radio( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_set( i )</code></li>
+    <li><code>obj:menuitem_setonly( i )</code></li>
+    <li><code>obj:menuitem_show( i )</code></li>
+    <li><code>obj:menuitem_submenu( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_value( i ) ==&gt; b</code></li>
+    <li><code>obj:menuitem_visible( i ) ==&gt; b</code></li>
+    <li><code>obj.value  [get: i; set: i]</code></li>
+    <li><code>obj.down_box  [get: s; set: s]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.menu_size  [get: i; set: -]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+</ul>
+
+
+<a name="Choice" id="Choice"></a>
+<h3><code>Choice</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Choice.html"><code>Fl_Choice</code></a></p>
+
+<p>Inherits from:
+<a href="#Menu"><code>Menu</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Choice( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Choice( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: i; set: i]</code></li>
+    <li>properties defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Menu_Bar" id="Menu_Bar"></a>
+<h3><code>Menu_Bar</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Menu__Bar.html"><code>Fl_Menu_Bar</code></a></p>
+
+<p>Inherits from:
+<a href="#Menu"><code>Menu</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Menu_Bar( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Menu_Bar( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Menu_Button" id="Menu_Button"></a>
+<h3><code>Menu_Button</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Menu__Button.html"><code>Fl_Menu_Button</code></a></p>
+
+<p>Inherits from:
+<a href="#Menu"><code>Menu</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Menu_Button( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Menu_Button( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li>properties defined for the <a href="#Menu"><code>Menu</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of menu button widgets can be set to one of the
+following values to select the mouse button(s) that activate the menu:</p>
+
+<ul>
+    <li><code>"NOPOPUP"</code></li>
+    <li><code>"POPUP1"</code></li>
+    <li><code>"POPUP2"</code></li>
+    <li><code>"POPUP12"</code></li>
+    <li><code>"POPUP3"</code> (usually what you want)</li>
+    <li><code>"POPUP13"</code></li>
+    <li><code>"POPUP23"</code></li>
+    <li><code>"POPUP123"</code></li>
+</ul>
+
+
+<a name="Progress" id="Progress"></a>
+<h3><code>Progress</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Progress.html"><code>Fl_Progress</code></a></p>
+
+<p>Inherits from:
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Progress( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Progress( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: d; set: d]</code></li>
+    <li><code>obj.maximum  [get: d; set: d]</code></li>
+    <li><code>obj.minimum  [get: d; set: d]</code></li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Valuator" id="Valuator"></a>
+<h3><code>Valuator</code> (abstract):</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Valuator.html"><code>Fl_Valuator</code></a></p>
+
+<ul>
+    <li><code>obj:bounds( d, d )</code></li>
+    <li><code>obj:clamp( d ) ==&gt; d</code></li>
+    <li><code>obj:format() ==&gt; s</code></li>
+    <li><code>obj:increment( d, i ) ==&gt; d</code></li>
+    <li><code>obj:range( d, d )</code></li>
+    <li><code>obj:round( d ) ==&gt; d</code></li>
+    <li><code>obj.step  [get: d; set: d]</code></li>
+    <li><code>obj.value  [get: d; set: d]</code></li>
+    <li><code>obj.maximum  [get: d; set: d]</code></li>
+    <li><code>obj.minimum  [get: d; set: d]</code></li>
+    <li><code>obj.precision  [get: -; set: i]</code></li>
+</ul>
+
+
+<a name="Adjuster" id="Adjuster"></a>
+<h3><code>Adjuster</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Adjuster.html"><code>Fl_Adjuster</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Adjuster( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Adjuster( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.soft  [get: b; set: b]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Counter" id="Counter"></a>
+<h3><code>Counter</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Counter.html"><code>Fl_Counter</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Counter( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Counter( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.step  [get: d; set: d]</code></li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.lstep  [get: -; set: d]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of counters can be set to one of the following
+values:</p>
+
+<ul>
+    <li><code>"FL_NORMAL_COUNTER"</code> (the default)</li>
+    <li><code>"FL_SIMPLE_COUNTER"</code></li>
+</ul>
+
+
+<a name="Dial" id="Dial"></a>
+<h3><code>Dial</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Dial.html"><code>Fl_Dial</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Dial( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Dial( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:angles( i, i )</code></li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.angle1  [get: i; set: i]</code></li>
+    <li><code>obj.angle2  [get: i; set: i]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of dials can be set to one of the following
+values:</p>
+
+<ul>
+    <li><code>"FL_NORMAL_DIAL"</code> (the default)</li>
+    <li><code>"FL_FILL_DIAL"</code></li>
+    <li><code>"FL_LINE_DIAL"</code></li>
+</ul>
+
+
+<a name="Roller" id="Roller"></a>
+<h3><code>Roller</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Roller.html"><code>Fl_Roller</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Roller( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Roller( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of roller widgets can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FL_VERTICAL"</code></li>
+    <li><code>"FL_HORIZONTAL"</code></li>
+</ul>
+
+
+<a name="Slider" id="Slider"></a>
+<h3><code>Slider</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Slider.html"><code>Fl_Slider</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Slider( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Slider( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:bounds( d, d )</code></li>
+    <li><code>obj:scrollvalue( i, i, i, i ) ==&gt; i</code></li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.type  [get: s; set: s]</code></li>
+    <li><code>obj.slider  [get: s; set: s]</code></li>
+    <li><code>obj.slider_size  [get: d; set: d]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+<p>The <code>type</code> property of slider widgets can be set to one of the
+following values:</p>
+
+<ul>
+    <li><code>"FL_VERTICAL"</code></li>
+    <li><code>"FL_HORIZONTAL"</code></li>
+    <li><code>"FL_VERT_FILL_SLIDER"</code></li>
+    <li><code>"FL_HOR_FILL_SLIDER"</code></li>
+    <li><code>"FL_VERT_NICE_SLIDER"</code></li>
+    <li><code>"FL_HOR_NICE_SLIDER"</code></li>
+</ul>
+
+
+<a name="Scrollbar" id="Scrollbar"></a>
+<h3><code>Scrollbar</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Scrollbar.html"><code>Fl_Scrollbar</code></a></p>
+
+<p>Inherits from:
+<a href="#Slider"><code>Slider</code></a>,
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Scrollbar( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Scrollbar( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li><code>obj:setvalue( i, i, i, i )</code> (corresponds to
+    <code>Fl_Scrollbar::value(int, int, int, int)</code>)</li>
+    <li>methods defined for the <a href="#Slider"><code>Slider</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.value  [get: i; set: i]</code></li>
+    <li><code>obj.linesize  [get: i; set: i]</code></li>
+    <li>properties defined for the <a href="#Slider"><code>Slider</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Value_Slider" id="Value_Slider"></a>
+<h3><code>Value_Slider</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Value__Slider.html"><code>Fl_Value_Slider</code></a></p>
+
+<p>Inherits from:
+<a href="#Slider"><code>Slider</code></a>,
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Value_Slider( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Value_Slider( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Slider"><code>Slider</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Slider"><code>Slider</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Value_Input" id="Value_Input"></a>
+<h3><code>Value_Input</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Value__Input.html"><code>Fl_Value_Input</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Value_Input( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Value_Input( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.soft  [get: b; set: b]</code></li>
+    <li><code>obj.input  [get: u; set: -]</code></li>
+    <li><code>obj.shortcut  [get: u; set: isu]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li><code>obj.cursor_color  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Value_Output" id="Value_Output"></a>
+<h3><code>Value_Output</code>:</h3>
+
+<p>Corresponds to:
+<a href="http://www.fltk.org/doc-1.3/classFl__Value__Output.html"><code>Fl_Value_Output</code></a></p>
+
+<p>Inherits from:
+<a href="#Valuator"><code>Valuator</code></a>,
+<a href="#Widget"><code>Widget</code></a></p>
+
+<ul>
+    <li><code>fl.Value_Output( i, i, i, i, ns ) ==&gt; u</code></li>
+    <li><code>fl.Value_Output( t ) ==&gt; u</code> (table constructor syntax)</li>
+    <li>methods defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>methods defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+    <li><code>obj.soft  [get: b; set: b]</code></li>
+    <li><code>obj.textfont  [get: s; set: is]</code></li>
+    <li><code>obj.textsize  [get: i; set: i]</code></li>
+    <li><code>obj.textcolor  [get: u; set: iu]</code></li>
+    <li>properties defined for the <a href="#Valuator"><code>Valuator</code></a> userdata type</li>
+    <li>properties defined for the <a href="#Widget"><code>Widget</code></a> userdata type</li>
+</ul>
+
+
+<a name="Functions" id="Functions"></a>
+<h3>Additional module functions:</h3>
+
+<ul>
+    <li><code>fl.run() ==&gt; i</code></li>
+    <li><code>fl.wait( nd ) ==&gt; b</code></li>
+    <li><code>fl.check() ==&gt; b</code></li>
+    <li><code>fl.args( t )</code></li>
+    <li><code>fl.get_system_colors()</code></li>
+    <li><code>fl.scheme() ==&gt; ns</code></li>
+    <li><code>fl.scheme( ns )</code></li>
+    <li><code>fl.redraw()</code></li>
+    <li><code>fl.option( s ) ==&gt; b</code></li>
+    <li><code>fl.option( s, b )</code></li>
+    <li><code>fl.open_uri( s ) ==&gt; b</code></li>
+    <li><code>fl.inactive( iu ) ==&gt; u</code></li>
+    <li><code>fl.contrast( iu, iu ) ==&gt; u</code></li>
+    <li><code>fl.color_average( iu, iu ) ==&gt; u</code></li>
+    <li><code>fl.lighter( iu ) ==&gt; u</code></li>
+    <li><code>fl.darger( iu ) == u</code></li>
+    <li><code>fl.rgb_color( i [, i, i] ) ==&gt; u</code></li>
+    <li><code>fl.get_color( ui ) ==&gt; i, i, i</code></li>
+    <li><code>fl.set_color( ui, i, i, i )</code></li>
+    <li><code>fl.cursor( s, iu, iu )</code></li>
+    <li><code>fl.shortcut_label( isu ) ==&gt; s</code></li>
+    <li><code>fl.alert( s )</code></li>
+    <li><code>fl.beep( ns )</code></li>
+    <li><code>fl.choice( s, ns, ns, ns ) ==&gt; ns</code></li>
+    <li><code>fl.color_chooser( ns, ni, ni, ni, ni ) ==&gt; nu</code></li>
+    <li><code>fl.dir_chooser( s, s, b ) == ns</code></li>
+    <li><code>fl.file_chooser( s, s, s, b ) ==&gt; ns</code></li>
+    <li><code>fl.input( s, ns ) ==&gt; ns</code></li>
+    <li><code>fl.message( s )</code></li>
+    <li><code>fl.password( s, ns ) ==&gt; ns</code></li>
+    <li><code>fl.message_hotspot( b )</code></li>
+    <li><code>fl.message_hotspot() ==&gt; b</code></li>
+    <li><code>fl.add_fd( i, f, nu )</code></li>
+    <li><code>fl.remove_fd( i, nu )</code></li>
+</ul>
+
+
+
+</body>
+</html>
